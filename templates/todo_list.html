@@ -1,0 +1,430 @@
+<!doctype html>
+<html lang="en">
+<head>
+
+    <!-- Webpage Title -->
+    <title>Studylog | SPARTA COMPASS</title>
+
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="shortcut icon" href="{{ url_for('static', filename='favicon.ico') }}" type="image/x-icon">
+    <link rel="icon" href="{{ url_for('static', filename='favicon.ico') }}" type="image/x-icon">
+    <meta property="og:title" content="WORKOUT - 운동일지"/>
+    <meta property="og:description" content="WORKOUT"/>
+    <meta property="og:image" content="{{ url_for('static', filename='ogimg.png') }}"/>
+
+    <!-- Bulma CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.1/css/bulma.min.css">
+
+    <!-- Font Awesome CSS -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@300&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Black+Han+Sans&family=Nanum+Gothic:wght@400;700&displayswap"
+          rel="stylesheet">
+    <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
+    <link href="{{ url_for('static', filename='mystyle.css') }}" rel="stylesheet">
+
+    <!-- JS -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.js"></script>
+    <script src="{{ url_for('static', filename='myjs.js') }}"></script>
+
+    <script>
+
+        let getday = window.location.search;
+        // window.location.search :'?' 뒤의 쿼리스트링을 가져옵니다.
+        let getdays = getday.split('=');
+        // getday에서 가져온 쿼리스트링 '='나눔
+        let getOnlyday = getdays[1];
+        // getdays의 2번째 단어
+        let decodeday = decodeURI(getOnlyday)
+        // decodeURI는 encodeURI로 이스케이핑 된 문자열을 정상적인 문자열로 되돌려주는 역활
+
+
+        // 함수 실행시 메인화면으로 넘기기{##}
+        function to_do() {
+            window.location.href = "/"
+        }
+
+        $(document).ready(function () {
+            show_todo()
+        });
+        // 시작하자마자  show_todo()로
+
+        // 겟 방식으로 저장된 데이터값 불러오기
+        function show_todo() {
+            $.ajax({
+                type: "GET",
+                url: "/todo",
+                data: {},
+                success: function (response) {
+                    let rows = response['todo']
+                    for (let i = 0; i < rows.length; i++) {
+                        let todo = rows[i]['todo']
+                        let num = rows[i]['num']
+                        let done = rows[i]['done']
+                        let date = rows[i]['date']
+
+                        let temp_html = ``
+
+                        if (date == decodeday) {
+                            if (done == 0) {
+                            temp_html = `<li>
+                                            <h2><input onclick="done_todo(${num})" type="checkbox" class="btn-chk" > ${todo}</h2>
+                                            <button onclick="delete_todo(${num})" type="button" class="btn">✖</button>
+                                         </li>`
+                            } else {
+                                temp_html = `<li>
+                                                <h2 class="selected"><input onclick="cancel_todo(${num})" type="checkbox" class="btn-chk" checked> ${todo}</h2>
+                                                <button onclick="delete_todo(${num})" type="button" class="btn">✖</button>
+                                             </li>`
+                            }
+                        }
+                        $('#todo-list').append(temp_html)
+                    }
+                }
+            });
+        }
+
+
+        // 포스트 방식으로 데이터 저장하기
+        function save_todo() {
+            let todo = $('#todo-input').val()
+            let date = decodeday
+
+            $.ajax({
+                type: "POST",
+                url: "/todo",
+                data: {
+                    todo_give: todo,
+                    date_give: date
+                },
+                success: function (response) {
+                    alert(response["msg"])
+                    window.location.reload()
+                }
+            });
+        }
+
+        // 체크박스 체크시 num의 값을 1으로 변경
+        function done_todo(num) {
+            $.ajax({
+                type: "POST",
+                url: "/todo/done",
+                data: {num_give: num},
+                success: function (response) {
+                    alert(response["msg"])
+                    window.location.reload()
+                }
+            });
+        }
+
+        //체크박스 체크시 num의 값을 0로 변경
+        function cancel_todo(num) {
+            $.ajax({
+                type: "POST",
+                url: "/todo/cancel",
+                data: {num_give: num},
+                success: function (response) {
+                    alert(response["msg"])
+                    window.location.reload()
+                }
+            });
+        }
+
+        // 데이터 삭제기능
+        function delete_todo(num) {
+            $.ajax({
+                type: "POST",
+                url: "/todo/delete",
+                data: {num_give: num},
+                success: function (response) {
+                    alert(response["msg"])
+                    window.location.reload()
+                }
+            });
+        };
+
+                // 입력버튼 비활성화, 활성화 추가
+        $(function(){
+            $("#todo-input").on('input', function (){
+                if ($("#todo-input").val() == '') {
+                    $('.todo_btn').attr('disabled', true);
+                } else {
+                    $('.todo_btn').attr('disabled', false);
+                }
+            })
+        })
+
+
+    </script>
+
+    <style>
+        * {
+            box-sizing: border-box;
+            font-family: 'Nanum Gothic', sans-serif;
+        }
+
+        a {
+            text-decoration: none;
+            color: white;
+
+        }
+
+        /*<a>꾸며줌*/
+
+        .head {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            /*가운데 정렬*/
+        }
+
+        .h1 {
+            width: 200px;
+            margin: 20px auto;
+            font-family: 'Black Han Sans', sans-serif;
+            padding-left: 15px;
+            border: none;
+            padding: 0;
+            background: none;
+        }
+
+        .h1:hover {
+            color: blue;
+        }
+
+        .main {
+            width: 95%;
+            max-width: 500px;
+            overflow: hidden;
+            min-height: 200px;
+
+            background-color: deepskyblue;
+            border-radius: 20px;
+        }
+
+        hr {
+            width: 90%;
+            margin: auto;
+            color: #333;
+        }
+
+        /*<hr>꾸며줌*/
+        .todo_name {
+            display: flex;
+            flex-direction: row;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .todo_title {
+            font-size: 25px;
+            font-weight: bold;
+            padding: 20px;
+            float: left;
+            margin-left: 10px;
+        }
+
+        /*float 은 해당 요소를 어떻게 정렬할지를 정의*/
+        #today {
+            width: 125px;
+            font-weight: bold;
+            font-size: 20px;
+            float: left;
+            padding: 25px;
+
+        }
+          #date-input {
+            border-radius: 10px;
+            background-color: floralwhite;
+            font-family: 'Nanum Gothic', sans-serif;
+        }
+
+
+        .todo_body {
+            width: 90%;
+            height: 50px;
+            margin: auto;
+            margin-bottom: 10px;
+
+            display: flex;
+            flex-direction: row;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .todo_body > input {
+            width: 80%;
+            padding-left: 10px;
+            border-radius: 5px;
+            border-top: none;
+            border-left: none;
+            border-right: none;
+            border-bottom: 2px solid white;
+        }
+
+        .todo_body > button {
+            width: 20%;
+            margin-left: 10px;
+            background: #e8344e;
+            border-radius: 10px;
+            border: 2px solid #e8344e;
+            clear: both;
+            color: white;
+        }
+
+        .todo_list {
+
+            width: 88%;
+            height: 50px;
+            margin: 20px auto;
+
+            height: auto;
+            min-height: 100px;
+            /* box-shadow: 0px 0px 10px 0px lightblue;             */
+        }
+
+           .todo_list > li {
+            display: flex;
+            flex-direction: row;
+
+            background-color: white;
+            margin-bottom: 10px;
+            border-radius: 10px;
+        }
+
+        .todo_list > li > h2 {
+            margin-top: auto;
+            font-size: 15px;
+        }
+
+        .todo_list > li > button {
+            color: green;
+            margin-left: 10px;
+        }
+        /*취소버튼*/
+
+        .btn-chk {
+            width: 50px;
+        }
+        /*버튼과 글자 사이*/
+
+        .selected{
+            text-decoration:line-through;
+            color:red
+        /*체크하면 빨강, 체크 생김*/
+        }
+
+        .schedule {
+            width: 95%;
+            max-width: 500px;
+            margin-top: 10px;
+
+            height: 300px;
+            min-height: 100px;
+
+            background-color: dodgerblue;
+            border-radius: 20px;
+            font-family: 'Nanum Gothic', sans-serif;
+
+        }
+
+        .schedule_title {
+            font-size: 20px;
+            font-weight: bold;
+            padding-top: 20px;
+            padding-left: 20px;
+        }
+
+        .schedule_body {
+            width: 90%;
+            height: 50px;
+            margin: 20px auto;
+            /*    {#margin-bottom: 10px;#!*}
+                {#margin-left: 20px;#}*!*/
+        }
+
+        .schedule_footer {
+            margin-top: 20px;
+            margin: auto;
+        }
+
+        .msg {
+            display: flex;
+            flex-direction: row;
+            justify-content: center;
+            align-items: center;
+            margin-bottom: 30px;
+            font-size: 20px;
+            font-family: 'Jua', sans-serif;
+        }
+
+        .Schedule {
+            display: flex;
+            flex-direction: row;
+            justify-content: center;
+            align-items: center;
+            width: 90%;
+            font-size: 30px;
+            padding-left: 50px;
+            border-radius: 10px;
+            font-family: 'Jua', sans-serif;
+
+        }
+
+        .Schedule:hover {
+            color: #e8344e;
+        }
+
+
+    </style>
+</head>
+
+<body>
+<div class="head">
+    <button class="h1" onclick="to_do()">WORKOUT</button>
+
+    <div class="main">
+        <div class="todo_box">
+            <div class="todo_name">
+                <div class="todo_title">오늘의 WORKOUT</div>
+                <div id="today">
+                    <script type="text/javascript">
+                        document.write(decodeday);
+                        // document.write() 메소드는 웹 페이지가 로딩될 때 실행되면, 웹 페이지에 가장 먼저 데이터를 출력
+                    </script>
+                </div>
+            </div>
+
+            <div class="todo_body">
+                <input id="todo-input" class="todo_text" type="text" maxlength="30" placeholder="오늘의 운동을 입력하세요.">
+                <button onclick="save_todo()" disabled="true" class="todo_btn">입력하기</button>
+                <!--                    onclick="save_todo()"-->
+                <!--                    maxlength 속성은 <input> 요소에 입력할 수 있는 최대 문자수를 명시-->
+                <!--                    placeholder 는 input에 아무 값이 없을때 입력을 돕기 위한 간단한 힌트(단어 또는 짧은 문장)-->
+                <!--                    disabled 속성 설정하기 true면 비활성화 false면 활성화-->
+
+            </div>
+            <hr>
+            <div class="todo_list" id="todo-list">
+            </div>
+        </div>
+    </div>
+    <div class="schedule">
+        <div class="schedule_title">WORKOUT 일정</div>
+        <div class="schedule_body"><img src=".ᕙ(⇀‸↼‵‵)ᕗ" width="47px">&emsp;<img src="../static/graph.png"
+                                                                                           width="380px"></div>
+        <div class="msg">건강한 하루를 위해 끝까지 화이팅!<br>건강하고 행복한 그날을 위해 모두 힘내요!</div>
+        <div class="schedule_footer"><a class="Schedule" href="http://www.marathon.pe.kr/schedule_index.html">❤ 마라톤 상세일정
+            보러가기 ❤</a>
+        </div>
+    </div>
+</div>
+
+</body>
+</html>
