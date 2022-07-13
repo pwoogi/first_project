@@ -21,20 +21,22 @@ body {
 }
 
 .is-sparta {
-    color: #e8344e !important;
+    color: #527EE6 ;
     margin: 0 0 0 5px;
+    border-radius: 5px;
+    border:none;
 }
 
 .button.is-sparta {
-    background-color: #FD9F28;
+    background-color: #527EE6;
     border-color: transparent;
     color: #fff !important;
 }
 
 .button.is-sparta.is-outlined {
     background-color: transparent;
-    border-color: #FD9F28;
-    color: #FD6F22 !important;
+    border-color: #527EE6;
+    color: #527EE6 !important;
 }
 
 .modal-content {
