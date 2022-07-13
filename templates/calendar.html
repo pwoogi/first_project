@@ -1,0 +1,116 @@
+<!doctype html>
+<div lang="en">
+    <head>
+
+        <!-- Webpage Title -->
+        <title>D3 | WORKLOG</title>
+
+        <!-- Required meta tags -->
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+        <link rel="shortcut icon" href="{{ url_for('static', filename='favicon.ico') }}" type="image/x-icon">
+        <link rel="icon" href="{{ url_for('static', filename='favicon.ico') }}" type="image/x-icon">
+        <meta property="og:title" content="D3WORKLOG - 항해 3조의 운동일지"/>
+        <meta property="og:description" content="mini project for Web Plus"/>
+        <meta property="og:image" content="{{ url_for('static', filename='ogimg.png') }}"/>
+
+        <!-- Bulma CSS -->
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.1/css/bulma.min.css">
+
+        <!-- Font Awesome CSS -->
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@600&display=swap" rel="stylesheet">
+        <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@300&display=swap" rel="stylesheet">
+        <link href="https://fonts.googleapis.com/css2?family=Black+Han+Sans&family=Nanum+Gothic:wght@400;700&displayswap"
+              rel="stylesheet">
+        <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
+        <link href="{{ url_for('static', filename='mystyle.css') }}" rel="stylesheet">
+        <!-- JS -->
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.js"></script>
+        <script src="{{ url_for('static', filename='myjs.js') }}"></script>
+
+
+        <script>
+            $(document).on('click', '.dates', function () {
+                let num = $(this).attr("value")
+                window.location.href = "/calendar_toodo?calender=" + num;
+            });
+
+            function sign_out() {
+                $.removeCookie('mytoken', {path: '/'});
+                alert('로그아웃! 내일도 화이팅!')
+                window.location.href = "/login"
+            }
+        </script>
+
+    </head>
+    {# 배너 #}
+    <nav class="navbar is-fixed-top is-white" role="navigation" aria-label="main navigation">
+        <div class="navbar-brand">
+            <a class="navbar-item" href="/">
+                <img src="{{ url_for('static', filename='logo.png') }}">
+                <strong class="is-sparta"
+                        style="font-family: 'Fredoka', sans-serif;font-size: large;">D3 WORKLOG</strong>
+            </a>
+        </div>
+        <div class="profile">
+            <a class="image is-32x32" href="/user/{{ user_info.username }}">
+                <img class="is-rounded" src="{{ url_for('static', filename="profile_pics/profile_placeholder.png") }}">
+            </a>
+            <h7 class="mention" style="color: darkslategray; border-color: #000000">{{ user_info.username }}님의 운동을
+                응원합니다!
+            </h7>
+            <a class="button level-item has-text-centered is-sparta is-outlined" aria-label="logout"
+               onclick="sign_out()">
+                LOGOUT&nbsp;&nbsp;&nbsp;<span class="icon is-small"><i class="fa fa-sign-out"
+                                                                       aria-hidden="true"></i></span>
+            </a>
+        </div>
+    </nav>
+
+
+    <div class="tabs is-left">
+        <ul>
+            <li class="is-active" onclick="window.location.href = '/'"><a
+                    style="font-family: 'Fredoka', sans-serif;"><img
+                    src="{{ url_for('static', filename="Schedule.png") }}" class="schedule_img">Schedule</a></li>
+            <li onclick="window.location.href = '/studylog'"><a style="font-family: 'Fredoka', sans-serif;"><img
+                    src="{{ url_for('static', filename="Studylog.png") }}" class="studylog_img">Work Log</a></li>
+        </ul>
+    </div>
+    <div class="tan_wrap">
+        <div class="retan">
+            <h1>WORKLOG SCHEDULE</h1>
+
+            <iframe width="360" height="315" src="https://www.youtube.com/embed/gMaB-fG4u4g"
+                    title="YouTube video player" frameborder="0"
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                    allowfullscreen></iframe>
+        </div>
+    </div>
+
+    <div class="sec_cal">
+        <div class="cal_nav">
+            <a href="javascript:;" class="nav-btn go-prev">prev</a>
+            <div class="year-month"></div>
+            <a href="javascript:;" class="nav-btn go-next">next</a>
+        </div>
+        <div class="cal_wrap">
+            <div class="days">
+                <div class="day">MON</div>
+                <div class="day">TUE</div>
+                <div class="day">WED</div>
+                <div class="day">THU</div>
+                <div class="day">FRI</div>
+                <div class="day">SAT</div>
+                <div class="day">SUN</div>
+            </div>
+            <div class="dates"></div>
+        </div>
+    </div>
+</div>
+</body>
+</html>
+
