@@ -1,0 +1,385 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="//code.jquery.com/jquery-3.3.1.min.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
+        crossorigin="anonymous"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Black+Han+Sans&family=Do+Hyeon&family=Dongle&family=Jua&family=Nanum+Gothic&family=Nanum+Pen+Script&display=swap" rel="stylesheet">
+    <title>Document</title>
+    <script>
+        let getday = window.location.search;
+        let getdays = getday.split('=');
+        let getOnlyday = getdays[1];
+        let decodeday = decodeURI(getOnlyday)
+
+        // 함수 실행시 메인화면으로 넘기기
+        function to_do() {
+            window.location.href = "/"
+        }
+        $(document).ready(function () {
+            show_todo()
+        });
+
+        // 겟 방식으로 저장된 데이터값 불러오기
+        function show_todo() {
+            $.ajax({
+                type: "GET",
+                url: "/todo",
+                data: {},
+                success: function (response) {
+                    let rows = response['todo']
+                    for (let i = 0; i < rows.length; i++) {
+                        let todo = rows[i]['todo']
+                        let num = rows[i]['num']
+                        let done = rows[i]['done']
+                        let date = rows[i]['date']
+
+                        let temp_html = ``
+
+                        if (date == decodeday) {
+                            if (done == 0) {
+                            temp_html = `<li>
+                                            <h2><input onclick="done_todo(${num})" type="checkbox" class="btn-chk" > ${todo}</h2>
+                                            <button onclick="delete_todo(${num})" type="button" class="btn">✖</button>
+                                         </li>`
+                            } else {
+                                temp_html = `<li>
+                                                <h2 class="selected"><input onclick="cancel_todo(${num})" type="checkbox" class="btn-chk" checked> ${todo}</h2>
+                                                <button onclick="delete_todo(${num})" type="button" class="btn">✖</button>
+                                             </li>`
+                            }
+                        }
+                        $('#todo-list').append(temp_html)
+                    }
+                }
+            });
+        }
+
+        // 포스트 방식으로 데이터 저장하기
+        function save_todo() {
+            let todo = $('#todo-input').val()
+            let date = decodeday
+
+            $.ajax({
+                type: "POST",
+                url: "/todo",
+                data: {
+                    todo_give: todo,
+                    date_give: date
+                },
+                success: function (response) {
+                    {#alert(response["msg"])#}
+                    window.location.reload()
+                }
+            });
+        }
+
+        // 체크박스 체크시 num의 값을 0으로 변경
+        function done_todo(num) {
+            $.ajax({
+                type: "POST",
+                url: "/todo/done",
+                data: {num_give: num},
+                success: function (response) {
+                    {#alert(response["msg"])#}
+                    window.location.reload()
+                }
+            });
+        }
+
+        //체크박스 체크시 num의 값을 1로 변경
+        function cancel_todo(num) {
+            $.ajax({
+                type: "POST",
+                url: "/todo/cancel",
+                data: {num_give: num},
+                success: function (response) {
+                    {#alert(response["msg"])#}
+                    window.location.reload()
+                }
+            });
+        }
+
+        // 데이터 삭제기능
+        function delete_todo(num) {
+            $.ajax({
+                type: "POST",
+                url: "/todo/delete",
+                data: {num_give: num},
+                success: function (response) {
+                    {#console.log(response["msg"])#}
+                    window.location.reload()
+                }
+            });
+        };
+
+        // 입력버튼 비활성화, 활성화 추가
+        $(function(){
+            $("#todo-input").on('input', function (){
+                if ($("#todo-input").val() == '') {
+                    $('.todo_btn').attr('disabled', true);
+                } else {
+                    $('.todo_btn').attr('disabled', false);
+                }
+            })
+        })
+    </script>
+
+
+    <style>
+        * {
+            box-sizing: border-box;
+            font-family: 'Nanum Gothic', sans-serif;
+        }
+
+        a{
+            text-decoration: none;
+            color: #333333;
+        }
+
+        .head {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .h1 {
+            width: 200px;
+            margin: 20px auto;
+            font-family: 'Black Han Sans', sans-serif;
+            padding-left: 15px;
+            border: none;
+            padding: 0;
+            background: none;
+        }
+
+        .h1:hover {
+            color: #e8344e;
+        }
+
+        .main {
+            width: 95%;
+            max-width: 500px;
+            overflow: hidden;
+            min-height: 200px;
+
+            background-color: #ffe3e7;
+            border-radius: 20px;
+        }
+
+        hr {
+            width: 90%;
+            margin: auto;
+            color: #333;
+        }
+
+        .todo_name {
+            display: flex;
+            flex-direction: row;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .todo_title {
+            font-size: 25px;
+            font-weight: bold;
+            padding: 20px;
+            float: left;
+            margin-left: 10px;
+        }
+
+
+        #today{
+            width: 125px;
+            font-weight: bold;
+            font-size: 20px;
+            float: left;
+            padding: 25px;
+
+        }
+        #date-input {
+            border-radius: 10px;
+            background-color: floralwhite;
+            font-family: 'Nanum Gothic', sans-serif;
+        }
+
+        .todo_body {
+            width: 90%;
+            height: 50px;
+            margin: auto;
+            margin-bottom: 10px;
+
+            display: flex;
+            flex-direction: row;
+            justify-content: center;
+            align-items: center;
+        }
+
+
+        .todo_body > input {
+            width: 80%;
+            padding-left: 10px;
+            border-radius: 5px;
+            border-top: none;
+            border-left: none;
+            border-right: none;
+            border-bottom: 2px solid white;
+        }
+
+        .todo_body > button {
+            width: 20%;
+            margin-left: 10px;
+            background: #e8344e;
+            border-radius: 10px;
+            border: 2px solid #e8344e;
+            clear: both;
+            color: white;
+        }
+
+        .todo_list {
+
+            width: 88%;
+            height: 50px;
+            margin: 20px auto;
+
+            height:auto;
+            min-height: 100px;
+            /* box-shadow: 0px 0px 10px 0px lightblue;             */
+        }
+
+        .todo_list > li {
+            display: flex;
+            flex-direction: row;
+
+            background-color: white;
+            margin-bottom: 10px;
+            border-radius: 10px;
+        }
+
+        .todo_list > li > h2 {
+            margin-top: auto;
+            font-size: 15px;
+        }
+
+        .todo_list > li > button {
+            color: saddlebrown;
+        }
+
+        .btn-chk {
+            width: 50px;
+        }
+
+        .selected{
+            text-decoration:line-through;
+            color:red
+
+        }
+
+        .schedule {
+            width: 95%;
+            max-width: 500px;
+            margin-top: 10px;
+
+            height: 300px;
+            min-height: 100px;
+
+            background-color: #ffe3e7;
+            border-radius: 20px;
+            font-family: 'Nanum Gothic', sans-serif;
+        }
+
+        .schedule_title {
+            font-size: 20px;
+            font-weight: bold;
+            padding-top: 20px;
+            padding-left: 20px;
+        }
+
+        .schedule_body {
+            width: 90%;
+            height: 50px;
+            margin: 20px auto;
+            {#margin-bottom: 10px;#}
+            {#margin-left: 20px;#}
+        }
+
+        .schedule_footer {
+            margin-top: 20px;
+            margin: auto;
+        }
+
+        .msg {
+            display: flex;
+            flex-direction: row;
+            justify-content: center;
+            align-items: center;
+            margin-bottom: 30px;
+            font-size: 20px;
+            font-family: 'Jua', sans-serif;
+        }
+
+        .Schedule{
+            display: flex;
+            flex-direction: row;
+            justify-content: center;
+            align-items: center;
+            width: 90%;
+            font-size: 30px;
+            padding-left: 50px;
+            border-radius: 10px;
+            font-family: 'Jua', sans-serif;
+        }
+
+        .Schedule:hover{
+            color: #e8344e;
+        }
+
+
+
+
+
+    </style>
+    <scrip>
+
+    </scrip>
+</head>
+<body>
+    <div class="head">
+        <button class="h1" onclick="to_do()">항해 나침반</button>
+        <div class="main">
+            <div class="todo_box">
+                <div class="todo_name">
+                    <div class="todo_title">오늘의 할일</div>
+                    <div id="today">
+                        <script type="text/javascript">
+                            document.write(decodeday);
+                        </script>
+                    </div>
+                </div>
+
+                <div class="todo_body">
+                    <input id="todo-input" class="todo_text" type="text" maxlength="30" placeholder="오늘의 할 일을 입력하세요.">
+                    <button onclick="save_todo()" disabled ="true" class="todo_btn">입력하기</button>
+                </div>
+                <hr>
+                <div class="todo_list" id="todo-list">
+                </div>
+            </div>
+        </div>
+        <div class="schedule">
+            <div class="schedule_title">항해 6기 일정</div>
+            <div class="schedule_body"><img src="../static/sparta.png" width="47px">&emsp;<img src="../static/graph.png" width="380px"></div>
+            <div class="msg">항해 6기 여러분 끝까지 화이팅!<br>99일동안 게더에서 함께 놀아요</div>
+            <div class="schedule_footer"><a class="Schedule" href="https://teamsparta.notion.site/9c17fd9ec5f04297ac6be8d1a2046564?v=9acdf57f6b18495889b9d4efb05e2826">❤ 상세일정 보러가기 ❤</a>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

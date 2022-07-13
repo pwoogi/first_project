@@ -1,0 +1,345 @@
+<!doctype html>
+<html lang="en">
+    <head>
+
+        <!-- Webpage Title -->
+        <title>Studylog | SPARTA COMPASS</title>
+
+        <!-- Required meta tags -->
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+        <link rel="shortcut icon" href="{{ url_for('static', filename='favicon.ico') }}" type="image/x-icon">
+        <link rel="icon" href="{{ url_for('static', filename='favicon.ico') }}" type="image/x-icon">
+        <meta property="og:title" content="스파르타 나침반 - 항해 99일의 스케쥴러"/>
+        <meta property="og:description" content="mini project for Web Plus"/>
+        <meta property="og:image" content="{{ url_for('static', filename='ogimg.png') }}"/>
+
+        <!-- Bulma CSS -->
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.1/css/bulma.min.css">
+
+        <!-- Font Awesome CSS -->
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@600&display=swap" rel="stylesheet">
+        <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@300&display=swap" rel="stylesheet">
+        <link href="https://fonts.googleapis.com/css2?family=Black+Han+Sans&family=Nanum+Gothic:wght@400;700&displayswap"
+              rel="stylesheet">
+        <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
+        <link href="{{ url_for('static', filename='mystyle.css') }}" rel="stylesheet">
+
+        <!-- JS -->
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.js"></script>
+        <script src="{{ url_for('static', filename='myjs.js') }}"></script>
+
+        <script>
+            $(document).ready(function () {
+                listing();
+            });
+
+            function sign_out() {
+            $.removeCookie('mytoken', {path: '/'});
+            alert('로그아웃! 내일도 화이팅!')
+            window.location.href = "/login"
+            }
+
+            //저장된 값 가져오기
+            function listing() {
+                $.ajax({
+                    type: 'GET',
+                    url: '/list',
+                    data: {},
+                    success: function (response) {
+                        let rows = response['lists']
+                        for (let i = 0; i < rows.length; i++) {
+                            let name = rows[i]['name']
+                            let blrink = rows[i]['blrink']
+                            let chrink = rows[i]['chrink']
+                            let num = rows[i]['num']
+                            let comment = rows[i]['comment']
+                            let done = rows[i]['done']
+
+                            let temp_html = ``
+                            if (done == 0) {
+                                temp_html = `<li>
+                                                    <details class="small_list">
+                                                      <summary>제목: ${name} <button class="deletebtn is-sparta" onclick="delete_list(${num})" type="button">삭제</button></summary>
+                                                      <div>블로그 주소 :${blrink}</div><div>추천 주소 : ${chrink}</div><div>소개 : ${comment}</div>
+                                                      <button onclick="done_list(${num})" type="button" class="btn btn-outline-primary is-sparta">완료!</button>
+                                                    </details>
+                                                </li>`
+                            } else {
+                                temp_html = `<li id="list_undone"class="done small_list">
+                                                    <details>
+                                                      <summary >제목: ${name} <button class="deletebtn is-sparta" onclick="delete_list(${num})" type="button">삭제</button></summary>
+                                                      <div>링크 :${blrink}</div><div>추천 주소 : ${chrink}</div><div>소개 : ${comment}</div>
+                                                      <button onclick="undone_list(${num})" type="button" class="btn btn-outline-primary is-sparta">취소!</button>
+                                                    </details>
+                                                </li>`
+                            }
+                            $('.sub_list_list').append(temp_html)
+                        }
+
+                    }
+                })
+            }
+
+            // 값을 저장
+            function posting() {
+                let name = $('#name').val()
+                let blrink = $('#blrink').val()
+                let chrink = $('#chrink').val()
+                let comment = $('#comment').val()
+
+                $.ajax({
+                    type: 'POST',
+                    url: '/list',
+                    data: {name_give: name, blrink_give: blrink, chrink_give: chrink, comment_give: comment},
+                    success: function (response) {
+                        alert(response['msg'])
+                        window.location.reload()
+                    }
+                });
+            }
+
+            //저장된 값을 리스트에서 삭제
+            function done_list(num) {
+                $.ajax({
+                    type: "POST",
+                    url: "/list/done",
+                    data: {num_give: num},
+                    success: function (response) {
+                        alert(response["msg"])
+                        window.location.reload()
+                    }
+                });
+            }
+
+            //저장된 값을 리스트에서 삭제 취소
+            function undone_list(num) {
+                $.ajax({
+                    type: "POST",
+                    url: "/list/undone",
+                    data: {num_give: num},
+                    success: function (response) {
+                        alert(response["msg"])
+                        window.location.reload()
+
+                    }
+                });
+            }
+            {#데이터 삭제기능#}
+            function delete_list(num) {
+                $.ajax({
+                    type: "POST",
+                    url: "/list/delete",
+                    data: {num_give: num},
+                    success: function (response) {
+                        alert(response["msg"])
+                        window.location.reload()
+                    }
+                });
+            };
+        </script>
+
+        <style>
+            body {
+                margin: auto;
+                width:100%;
+                height: 98%;
+                font-family: 'Nanum Gothic', sans-serif;
+                list-style: none;
+            }
+            .main_list {
+                display: flex;
+                flex-direction: row;
+                justify-content: center;
+                align-items: center;
+                font-family: 'Black Han Sans', sans-serif;
+            }
+            .contents_list{
+                width:1200px;
+                margin: 0px auto;
+            }
+            .spimage {
+                width: 70px;
+                height: 70px;
+            }
+            .subtitle {
+                font-size: 50px;
+                margin: 50px 20px 0px 20px;
+
+            }
+            h1 {
+                text-align: center;
+                width: 300px;
+                margin: 20px auto;
+                font-family: 'Black Han Sans', sans-serif;
+            }
+            .columns {
+                margin-top: 50px;
+
+            }
+            #main_columns {
+                background: #e8344e;
+                margin-right: 40px;
+                border-radius: 20px;
+            }
+            .field-label{
+                display: flex;
+                justify-content: center;
+                align-items: center;
+            }
+            .label {
+                color: white;
+            }
+
+            #main_columns input {
+                border-radius: 20px;
+            }
+            #main_columns textarea {
+                border-radius: 20px;
+            }
+            #sub_columns {
+                background: #e8344e;
+                border-radius: 20px;
+            }
+            .sub_list_list {
+                color: white;
+            }
+            .small_list{
+                display: flex;
+                flex-direction: row;
+            }
+            .deletebtn {
+                border-radius: 20px;
+                background-color: white;
+            }
+            #list_undone {
+                text-decoration:line-through;
+                color:darkmagenta;
+            }
+            .schedule_img {
+                height: auto;
+                max-width: 20%;
+            }
+
+            .studylog_img {
+                height: auto;
+                max-width: 20%;
+            }
+            .btn {
+                border-radius: 20px;
+            }
+
+
+        </style>
+
+    </head>
+    <body>
+
+    <nav class="navbar is-fixed-top is-white" role="navigation" aria-label="main navigation">
+        <div class="navbar-brand">
+            <a class="navbar-item" href="/">
+                <img src="{{ url_for('static', filename='logo.png') }}">
+                <strong class="is-sparta"
+                    style="font-family: 'Fredoka', sans-serif;font-size: large;">SPARTA COMPASS</strong>
+            </a>
+        </div>
+        <div class="profile">
+            <a class="image is-32x32" href="/user/{{ user_info.username }}">
+                <img class="is-rounded" src="{{ url_for('static', filename="profile_pics/profile_placeholder.png") }}">
+            </a>
+            <h7 class="mention" style="color: #5188E1; border-color: #000000">{{ user_info.username }}님, 항해를 응원합니다!</h7>
+            <a class="button level-item has-text-centered is-sparta is-outlined" aria-label="logout"
+               onclick="sign_out()">
+                LOGOUT&nbsp;&nbsp;&nbsp;<span class="icon is-small"><i class="fa fa-sign-out"
+                                                                       aria-hidden="true"></i></span>
+            </a>
+        </div>
+    </nav>
+
+    <div class="tabs is-left">
+        <ul>
+            <li class="is-active" onclick="window.location.href = '/'"><a style="font-family: 'Fredoka', sans-serif;"><img
+                    src="{{ url_for('static', filename="Schedule.png") }}" class="schedule_img">Schedule</a></li>
+            <li onclick="window.location.href = '/studylog'"><a style="font-family: 'Fredoka', sans-serif;"><img
+                    src="{{ url_for('static', filename="Studylog.png") }}" class="studylog_img">Study Log</a></li>
+        </ul>
+    </div>
+
+    <div class="contents_list">
+
+        <div class="main_list">
+            <img class ="spimage" src="{{ url_for('static', filename="spartastuding.png") }}">
+            <div class="subtitle is-1">항해 공부 기록</div>
+            <img class ="spimage" src="{{ url_for('static', filename="spartastudy.png") }}">
+        </div>
+
+        <div class="columns">
+        <div id="main_columns"class="column is-half">
+            <section>
+                <div class="field is-horizontal">
+                    <div class="field-label is-normal">
+                        <label class="label">Subject</label>
+                    </div>
+                    <div class="field-body">
+                        <div class="field">
+                            <div class="control">
+                                <input id="name" class="input" type="text" placeholder="공부주제를 입력해주세요.">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="field is-horizontal">
+                    <div class="field-label is-normal">
+                        <label class="label">Blog URL</label>
+                    </div>
+                    <div class="field-body">
+                        <div class="field">
+                            <div class="control">
+                                <input id="blrink" class="input" type="text" placeholder="개발블로그 URL을 입력해주세요.">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="field is-horizontal">
+                    <div class="field-label is-normal">
+                        <label class="label">Reference URL</label>
+                    </div>
+                    <div class="field-body">
+                        <div class="field">
+                            <div class="control">
+                                <input id="chrink" class="input" type="text" placeholder="참조용 URL을 입력해주세요.">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="field is-horizontal">
+                    <div class="field-label is-normal">
+                        <label class="label">Summary</label>
+                    </div>
+                    <div class="field-body">
+                        <div class="field">
+                            <div class="control">
+                                <textarea id="comment" class="textarea" placeholder="북마크를 위한 오늘의 공부내용을 간략하게 작성하세요."></textarea>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <button class="is-sparta" onclick="posting()" style="margin-left: 260px">기록하기</button>
+            </section>
+        </div>
+        <div id="sub_columns" class="column">
+            <div class="sub_list">
+                <div class="sub_list_list">
+                </div>
+            </div>
+        </div>
+    </div>
+
+    </div>
+
+
+    </body>
+</html>

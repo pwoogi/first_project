@@ -1,0 +1,505 @@
+<!doctype html>
+<html lang="en">
+<head>
+
+    <!-- Webpage Title -->
+    <title>Calendar | SPARTA COMPASS</title>
+
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="shortcut icon" href="{{ url_for('static', filename='favicon.ico') }}" type="image/x-icon">
+    <link rel="icon" href="{{ url_for('static', filename='favicon.ico') }}" type="image/x-icon">
+    <meta property="og:title" content="스파르타 나침반 - 항해 99일의 스케쥴러"/>
+    <meta property="og:description" content="mini project for Web Plus"/>
+    <meta property="og:image" content="{{ url_for('static', filename='ogimg.png') }}"/>
+
+    <!-- Bulma CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.1/css/bulma.min.css">
+
+    <!-- Font Awesome CSS -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@300&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Black+Han+Sans&family=Nanum+Gothic:wght@400;700&displayswap"
+          rel="stylesheet">
+    <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
+    <link href="{{ url_for('static', filename='mystyle.css') }}" rel="stylesheet">
+    <!-- JS -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.js"></script>
+    <script src="{{ url_for('static', filename='myjs.js') }}"></script>
+
+    <style>
+        * {
+                box-sizing: border-box;
+                font-family: 'Nanum Gothic', sans-serif;
+
+            }
+
+        ul {
+            list-style-type: none;
+        }
+
+        a {
+            text-decoration: none;
+            color: #666;
+        }
+
+        body {
+            font-family: Verdana, sans-serif;
+        }
+
+         #wrap{
+            width: 100%;
+            clear: both;
+        }
+
+        .calender_list {
+            margin: 0 auto;
+            width: 1200px;
+            height: 525px;
+            overflow: hidden;
+        }
+
+        .tan_wrap{
+            width: 430px;
+            height: 100px;
+            margin: 0 auto;
+        }
+        .retan{
+        float: left;
+        }
+
+        h1 {
+            width: 250px;
+            margin: 20px auto;
+            font-size: 50px;
+            font-family: 'Black Han Sans', sans-serif;
+            float: left;
+        }
+
+        .month {
+            padding: 20px 25px;
+            width: 100%;
+            background: #e8344e;
+            text-align: center;
+            border-top-left-radius: 20px;
+            border-top-right-radius: 20px;
+        }
+
+        .month > ul > li:last-child{
+            color: white;
+        }
+        .month ul {
+            margin: 0;
+            padding: 0;
+        }
+
+        .month ul li {
+            color: #333;
+            font-weight: bold;
+            font-size: 20px;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+        }
+
+        .month .prev {
+            float: left;
+            padding-top: 10px;
+        }
+
+        .month .next {
+            float: right;
+            padding-top: 10px;
+        }
+
+        .weekdays {
+            margin: 0;
+            padding: 10px 0;
+            background-color: #ffe3e7;
+            font-weight: bold;
+        }
+
+        .weekdays li {
+            display: inline-block;
+            width: 13.6%;
+            text-align: center;
+        }
+
+        .days {
+            padding: 10px 0;
+            background: white;
+            border-left: solid 1px #ffe3e7;
+            border-right: solid 1px #ffe3e7;
+            border-bottom: solid 1px #ffe3e7;
+            margin: 0;
+            border-bottom-left-radius: 20px;
+            border-bottom-right-radius: 20px;
+            color: #999;
+        }
+
+        .back {
+            color: #dddddd;
+        }
+
+        .days li {
+            list-style-type: none;
+            display: inline-block;
+            width: 13.6%;
+            height: 60px;
+            text-align: center;
+            margin-bottom: 5px;
+            font-size: 12px;
+            color: #777;
+        }
+
+
+        /* Add media queries for smaller screens */
+        @media screen and (max-width: 720px) {
+            .weekdays li, .days li {
+                width: 13.1%;
+            }
+        }
+
+        @media screen and (max-width: 420px) {
+            .weekdays li, .days li {
+                width: 12.5%;
+            }
+
+
+        }
+
+        @media screen and (max-width: 290px) {
+            .weekdays li, .days li {
+                width: 12.2%;
+            }
+        }
+
+        .unstyled-button {
+          border: none;
+          padding: 0;
+          background: none;
+            color: dimgray;
+        }
+
+        .move
+        {
+            float: left;
+            width: 1200px;
+            height: 505px;
+            margin: 10px 0;
+        }
+
+        .Sunday{
+            color: red;
+        }
+        .schedule_img {
+            height: auto;
+            max-width: 20%;
+        }
+
+        .studylog_img {
+            height: auto;
+            max-width: 20%;
+        }
+
+    </style>
+    <script>
+        $(document).on('click','.unstyled-button', function () {
+        let num = $(this).attr("value")
+           window.location.href = "/calender_toodo?calender=" + num;
+        });
+
+        function sign_out() {
+            $.removeCookie('mytoken', {path: '/'});
+            alert('로그아웃! 내일도 화이팅!')
+            window.location.href = "/login"
+        }
+    </script>
+
+</head>
+<body>
+{# 배너 #}
+<nav class="navbar is-fixed-top is-white" role="navigation" aria-label="main navigation">
+    <div class="navbar-brand">
+        <a class="navbar-item" href="/">
+            <img src="{{ url_for('static', filename='logo.png') }}">
+            <strong class="is-sparta"
+                style="font-family: 'Fredoka', sans-serif;font-size: large;">SPARTA COMPASS</strong>
+        </a>
+    </div>
+    <div class="profile">
+        <a class="image is-32x32" href="/user/{{ user_info.username }}">
+            <img class="is-rounded" src="{{ url_for('static', filename="profile_pics/profile_placeholder.png") }}">
+        </a>
+        <h7 class="mention" style="color: #5188E1; border-color: #000000">{{ user_info.username }}님, 항해를 응원합니다!</h7>
+        <a class="button level-item has-text-centered is-sparta is-outlined" aria-label="logout"
+           onclick="sign_out()">
+            LOGOUT&nbsp;&nbsp;&nbsp;<span class="icon is-small"><i class="fa fa-sign-out"
+                                                                   aria-hidden="true"></i></span>
+        </a>
+    </div>
+</nav>
+
+
+<div class="tabs is-left">
+    <ul>
+        <li class="is-active" onclick="window.location.href = '/'"><a style="font-family: 'Fredoka', sans-serif;"><img
+                src="{{ url_for('static', filename="Schedule.png") }}" class="schedule_img">Schedule</a></li>
+        <li onclick="window.location.href = '/studylog'"><a style="font-family: 'Fredoka', sans-serif;"><img
+                src="{{ url_for('static', filename="Studylog.png") }}" class="studylog_img">Study Log</a></li>
+    </ul>
+</div>
+
+{# 캘린더 #}
+<div class="tan_wrap">
+<div class="retan"><img src="../static/tan_compass.png" style="width: 100px"></div>
+    <h1>항해 나침반</h1>
+    </div>
+
+    <div id="wrap">
+        <div class="calender_list">
+                <div id="march" class="move">
+                    <div class="month">
+                        <ul>
+                            <li class="prev"><a href="#">&#10094;</a></li>
+                            <li class="next"><a href="#April" >&#10095;</a></li>
+                            <li>
+                                March<br>
+                                <span style="font-size:18px">2022</span>
+                            </li>
+                        </ul>
+                    </div>
+
+                    <ul class="weekdays">
+                        <li>Mon</li>
+                        <li>Tue</li>
+                        <li>Wed</li>
+                        <li>Thu</li>
+                        <li>Fri</li>
+                        <li>Sat</li>
+                        <li>Sun</li>
+                    </ul>
+                    <ul class="days">
+                        <li><span class="back">27</span></li>
+                        <li><span class="back">28</span></li>
+                        <li><button class="unstyled-button" value="3월1일">1</button></li>
+                        <li><button class="unstyled-button" value="3월2일">2</button></li>
+                        <li><button class="unstyled-button" value="3월3일">3</button></li>
+                        <li><button class="unstyled-button" value="3월4일">4</button></li>
+                        <li><button class="unstyled-button" value="3월5일">5</button></li>
+                        <li><button class="unstyled-button" value="3월6일"><span class="Sunday">6</span></button></li>
+                        <li><button class="unstyled-button" value="3월7일">7</button></li>
+                        <li><button class="unstyled-button" value="3월8일">8</button></li>
+                        <li><button class="unstyled-button" value="3월9일">9</button></li>
+                        <li><button class="unstyled-button" value="3월10일">10</button></li>
+                        <li><button class="unstyled-button" value="3월11일">11</button></li>
+                        <li><button class="unstyled-button" value="3월12일">12</button></li>
+                        <li><button class="unstyled-button" value="3월13일"><span class="Sunday">13</span></button></li>
+                        <li><button class="unstyled-button" value="3월14일">14</button></li>
+                        <li><button class="unstyled-button" value="3월15일">15</button></li>
+                        <li><button class="unstyled-button" value="3월16일">16</button></li>
+                        <li><button class="unstyled-button" value="3월17일">17</button></li>
+                        <li><button class="unstyled-button" value="3월18일">18</button></li>
+                        <li><button class="unstyled-button" value="3월19일">19</button></li>
+                        <li><button class="unstyled-button" value="3월20일"><span class="Sunday">20</span></button></li>
+                        <li><button class="unstyled-button" value="3월21일">21</button></li>
+                        <li><button class="unstyled-button" value="3월22일">22</button></li>
+                        <li><button class="unstyled-button" value="3월23일">23</button></li>
+                        <li><button class="unstyled-button" value="3월24일">24</button></li>
+                        <li><button class="unstyled-button" value="3월25일">25</button></li>
+                        <li><button class="unstyled-button" value="3월26일">26</button></li>
+                        <li><button class="unstyled-button" value="3월27일"><span class="Sunday">27</span></button></li>
+                        <li><button class="unstyled-button" value="3월28일">28</button></li>
+                        <li><button class="unstyled-button" value="3월29일">29</button></li>
+                        <li><button class="unstyled-button" value="3월30일">30</button></li>
+                        <li><button class="unstyled-button" value="3월31일">31</button></li>
+                        <li><button class="unstyled-button" value="4월1일"><span class="back">1</span></button></li>
+                        <li><button class="unstyled-button" value="4월2일"><span class="back">2</span></button></li>
+                    </ul>
+                </div>
+                <div id="April" class="move">
+                    <div class="month">
+                        <ul>
+                            <li class="prev"><a href="#march">&#10094;</a></li>
+                            <li class="next"><a href="#May">&#10095;</a></li>
+                            <li>
+                                April<br>
+                                <span style="font-size:18px">2022</span>
+                            </li>
+                        </ul>
+                    </div>
+
+                    <ul class="weekdays">
+                        <li>Mon</li>
+                        <li>Tue</li>
+                        <li>Wed</li>
+                        <li>Thu</li>
+                        <li>Fri</li>
+                        <li>Sat</li>
+                        <li>Sun</li>
+                    </ul>
+
+                    <ul class="days">
+                         <li><button class="unstyled-button" value="3월27일"><span class="back">27</span></button></li>
+                         <li><button class="unstyled-button" value="3월28일"><span class="back">28</span></button></li>
+                         <li><button class="unstyled-button" value="3월29일"><span class="back">29</span></button></li>
+                         <li><button class="unstyled-button" value="3월30일"><span class="back">30</span></button></li>
+                         <li><button class="unstyled-button" value="3월31일"><span class="back">31</span></button></li>
+                         <li><button class="unstyled-button" value="4월1일">1</button></li>
+                        <li><button class="unstyled-button" value="4월2일">2</button></li>
+                        <li><button class="unstyled-button" value="4월3일"><span class="Sunday">3</span></button></li>
+                        <li><button class="unstyled-button" value="4월4일">4</button></li>
+                        <li><button class="unstyled-button" value="4월5일">5</button></li>
+                        <li><button class="unstyled-button" value="4월6일">6</button></li>
+                        <li><button class="unstyled-button" value="4월7일">7</button></li>
+                        <li><button class="unstyled-button" value="4월8일">8</button></li>
+                        <li><button class="unstyled-button" value="4월9일">9</button></li>
+                        <li><button class="unstyled-button" value="4월10일"><span class="Sunday">10</span></button></li>
+                        <li><button class="unstyled-button" value="4월11일">11</button></li>
+                        <li><button class="unstyled-button" value="4월12일">12</button></li>
+                        <li><button class="unstyled-button" value="4월13일">13</button></li>
+                        <li><button class="unstyled-button" value="4월14일">14</button></li>
+                        <li><button class="unstyled-button" value="4월15일">15</button></li>
+                        <li><button class="unstyled-button" value="4월16일">16</button></li>
+                        <li><button class="unstyled-button" value="4월17일"><span class="Sunday">17</span></button></li>
+                        <li><button class="unstyled-button" value="4월18일">18</button></li>
+                        <li><button class="unstyled-button" value="4월19일">19</button></li>
+                        <li><button class="unstyled-button" value="4월20일">20</button></li>
+                        <li><button class="unstyled-button" value="4월21일">21</button></li>
+                        <li><button class="unstyled-button" value="4월22일">22</button></li>
+                        <li><button class="unstyled-button" value="4월23일">23</button></li>
+                        <li><button class="unstyled-button" value="4월24일"><span class="Sunday">24</span></button></li>
+                        <li><button class="unstyled-button" value="4월25일">25</button></li>
+                        <li><button class="unstyled-button" value="4월26일">26</button></li>
+                        <li><button class="unstyled-button" value="4월27일">27</button></li>
+                        <li><button class="unstyled-button" value="4월28일">28</button></li>
+                        <li><button class="unstyled-button" value="4월29일">29</button></li>
+                        <li><button class="unstyled-button" value="4월30일">30</button></li>
+                    </ul>
+                </div>
+                <div id="May" class="move">
+                    <div class="month">
+                        <ul>
+                            <li class="prev"><a href="#April">&#10094;</a></li>
+                            <li class="next"><a href="#June" >&#10095;</a></li>
+                            <li>
+                                May<br>
+                                <span style="font-size:18px">2022</span>
+                            </li>
+                        </ul>
+                    </div>
+
+                    <ul class="weekdays">
+                        <li>Mon</li>
+                        <li>Tue</li>
+                        <li>Wed</li>
+                        <li>Thu</li>
+                        <li>Fri</li>
+                        <li>Sat</li>
+                        <li>Sun</li>
+                    </ul>
+
+                    <ul class="days">
+                        <li><button class="unstyled-button" value="5월1일"><span class="Sunday">1</span></button></li>
+                        <li><button class="unstyled-button" value="5월2일">2</button></li>
+                        <li><button class="unstyled-button" value="5월3일">3</button></li>
+                        <li><button class="unstyled-button" value="5월4일">4</button></li>
+                        <li><button class="unstyled-button" value="5월5일">5</button></li>
+                        <li><button class="unstyled-button" value="5월6일">6</button></li>
+                        <li><button class="unstyled-button" value="5월7일">7</button></li>
+                        <li><button class="unstyled-button" value="5월8일"><span class="Sunday">8</span></button></li>
+                        <li><button class="unstyled-button" value="5월9일">9</button></li>
+                        <li><button class="unstyled-button" value="5월10일">10</button></li>
+                        <li><button class="unstyled-button" value="5월11일">11</button></li>
+                        <li><button class="unstyled-button" value="5월12일">12</button></li>
+                        <li><button class="unstyled-button" value="5월13일">13</button></li>
+                        <li><button class="unstyled-button" value="5월14일">14</button></li>
+                        <li><button class="unstyled-button" value="5월15일"><span class="Sunday">15</span></button></li>
+                        <li><button class="unstyled-button" value="5월16일">16</button></li>
+                        <li><button class="unstyled-button" value="5월17일">17</button></li>
+                        <li><button class="unstyled-button" value="5월18일">18</button></li>
+                        <li><button class="unstyled-button" value="5월19일">19</button></li>
+                        <li><button class="unstyled-button" value="5월20일">20</button></li>
+                        <li><button class="unstyled-button" value="5월21일">21</button></li>
+                        <li><button class="unstyled-button" value="5월22일"><span class="Sunday">22</span></button></li>
+                        <li><button class="unstyled-button" value="5월23일">23</button></li>
+                        <li><button class="unstyled-button" value="5월24일">24</button></li>
+                        <li><button class="unstyled-button" value="5월25일">25</button></li>
+                        <li><button class="unstyled-button" value="5월26일">26</button></li>
+                        <li><button class="unstyled-button" value="5월27일">27</button></li>
+                        <li><button class="unstyled-button" value="5월28일">28</button></li>
+                        <li><button class="unstyled-button" value="5월29일"><span class="Sunday">29</span></button></li>
+                        <li><button class="unstyled-button" value="5월30일">30</button></li>
+                        <li><button class="unstyled-button" value="5월31일">31</button></li>
+                        <li><button class="unstyled-button" value="6월1일"><span class="back">1</span></button></li>
+                        <li><button class="unstyled-button" value="6월2일"><span class="back">2</span></button></li>
+                        <li><button class="unstyled-button" value="6월3일"><span class="back">3</span></button></li>
+                        <li><button class="unstyled-button" value="6월4일"><span class="back">4</span></button></li>
+                    </ul>
+                </div>
+                <div id="June" class="move">
+                    <div class="month">
+                        <ul>
+                            <li class="prev"><a href="#May">&#10094;</a></li>
+                            <li class="next"><a href="#">&#10095;</a></li>
+                            <li>
+                                June<br>
+                                <span style="font-size:18px">2022</span>
+                            </li>
+                        </ul>
+                    </div>
+
+                    <ul class="weekdays">
+                        <li>Mon</li>
+                        <li>Tue</li>
+                        <li>Wed</li>
+                        <li>Thu</li>
+                        <li>Fri</li>
+                        <li>Sat</li>
+                        <li>Sun</li>
+                    </ul>
+
+                    <ul class="days">
+                        <li><button class="unstyled-button" value="5월29일"><span class="back">29</span></button></li>
+                        <li><button class="unstyled-button" value="5월30일"><span class="back">30</span></button></li>
+                        <li><button class="unstyled-button" value="5월31일"><span class="back">31</span></button></li>
+                        <li><button class="unstyled-button" value="6월1일">1</button></li>
+                        <li><button class="unstyled-button" value="6월2일">2</button></li>
+                        <li><button class="unstyled-button" value="6월3일">3</button></li>
+                        <li><button class="unstyled-button" value="6월4일">4</button></li>
+                        <li><button class="unstyled-button" value="6월5일"><span class="Sunday">5</span></button></li>
+                        <li><button class="unstyled-button" value="6월6일">6</button></li>
+                        <li><button class="unstyled-button" value="6월7일">7</button></li>
+                        <li><button class="unstyled-button" value="6월8일">8</button></li>
+                        <li><button class="unstyled-button" value="6월9일">9</button></li>
+                        <li><button class="unstyled-button" value="6월10일">10</button></li>
+                        <li><button class="unstyled-button" value="6월11일">11</button></li>
+                        <li><button class="unstyled-button" value="6월12일"><span class="Sunday">12</span></button></li>
+                        <li><button class="unstyled-button" value="6월13일">13</button></li>
+                        <li><button class="unstyled-button" value="6월14일">14</button></li>
+                        <li><button class="unstyled-button" value="6월15일">15</button></li>
+                        <li><button class="unstyled-button" value="6월16일">16</button></li>
+                        <li><button class="unstyled-button" value="6월17일">17</button></li>
+                        <li><button class="unstyled-button" value="6월18일">18</button></li>
+                        <li><button class="unstyled-button" value="6월19일"><span class="Sunday">19</span></button></li>
+                        <li><button class="unstyled-button" value="6월20일">20</button></li>
+                        <li><button class="unstyled-button" value="6월21일">21</button></li>
+                        <li><button class="unstyled-button" value="6월22일">22</button></li>
+                        <li><button class="unstyled-button" value="6월23일">23</button></li>
+                        <li><button class="unstyled-button" value="6월24일">24</button></li>
+                        <li><button class="unstyled-button" value="6월25일">25</button></li>
+                        <li><button class="unstyled-button" value="6월26일"><span class="Sunday">26</span></button></li>
+                        <li><button class="unstyled-button" value="6월27일">27</button></li>
+                        <li><button class="unstyled-button" value="6월28일">28</button></li>
+                        <li><button class="unstyled-button" value="6월29일">29</button></li>
+                        <li><button class="unstyled-button" value="6월30일">30</button></li>
+                    </ul>
+                </div>
+        </div>
+        </div>
+    </body>
+
+</html>
