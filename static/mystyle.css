@@ -1,3 +1,4 @@
+/* 전체 CSS 구조 */
 body {
     background-color: RGBA(0, 0, 0, 0);
     min-height: 100vh;
@@ -21,14 +22,12 @@ body {
 }
 
 .is-sparta {
-    color: #527EE6 ;
+    color: #527EE6 !important;
     margin: 0 0 0 5px;
-    border-radius: 5px;
-    border:none;
 }
 
 .button.is-sparta {
-    background-color: #527EE6;
+    background-color: royalblue;
     border-color: transparent;
     color: #fff !important;
 }
@@ -53,3 +52,179 @@ input::-webkit-calendar-picker-indicator {
     width: 100%;
     height: 100%;
 }
+
+
+
+
+/* section calendar */
+
+.sec_cal {
+    position: absolute;
+    left: 50%;
+    top: 60%;
+    transform: translate(-50%, -50%);
+    width: 360px;
+    margin: 0 auto;
+    font-family: "NotoSansR";
+}
+
+.sec_cal .cal_nav {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-weight: 700;
+    font-size: 48px;
+    line-height: 78px;
+}
+
+.sec_cal .cal_nav .year-month {
+    width: 300px;
+    text-align: center;
+    line-height: 1;
+}
+
+.sec_cal .cal_nav .nav {
+    display: flex;
+    border: 1px solid #333333;
+    border-radius: 5px;
+}
+
+.sec_cal .cal_nav .go-prev,
+.sec_cal .cal_nav .go-next {
+    display: block;
+    width: 50px;
+    height: 78px;
+    font-size: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.sec_cal .cal_nav .go-prev::before,
+.sec_cal .cal_nav .go-next::before {
+    content: "";
+    display: block;
+    width: 20px;
+    height: 20px;
+    border: 3px solid #000;
+    border-width: 3px 3px 0 0;
+    transition: border 0.1s;
+}
+
+.sec_cal .cal_nav .go-prev:hover::before,
+.sec_cal .cal_nav .go-next:hover::before {
+    border-color: #ed2a61;
+}
+
+.sec_cal .cal_nav .go-prev::before {
+    transform: rotate(-135deg);
+}
+
+.sec_cal .cal_nav .go-next::before {
+    transform: rotate(45deg);
+}
+
+.sec_cal .cal_wrap {
+    padding-top: 40px;
+    position: relative;
+    margin: 0 auto;
+    width: 200%;
+}
+
+.sec_cal .cal_wrap .days {
+    display: flex;
+    margin-bottom: 20px;
+    padding-bottom: 20px;
+    border-bottom: 1px solid #ddd;
+}
+
+.sec_cal .cal_wrap::after {
+    top: 368px;
+}
+
+.sec_cal .cal_wrap .day {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: calc(100% / 7);
+    text-align: left;
+    color: black;
+    font-size: 12px;
+    text-align: center;
+    border-radius: 5px
+}
+
+.current.today {
+    background: rgb(242 242 242);
+}
+
+.sec_cal .cal_wrap .dates {
+    display: flex;
+    flex-flow: wrap;
+    height: 290px;
+}
+
+.sec_cal .cal_wrap .day:nth-child(7n -1) {
+    color: #3c6ffa;
+}
+
+.sec_cal .cal_wrap .day:nth-child(7n) {
+    color: red;
+}
+
+.sec_cal .cal_wrap .day.disable {
+    color: #ddd;
+}
+
+/* calendar page */
+
+* {
+    box-sizing: border-box;
+    font-family: 'Nanum Gothic', sans-serif;
+
+}
+
+ul {
+    list-style-type: none;
+}
+
+a {
+    text-decoration: none;
+    color: mediumspringgreen;
+}
+
+body {
+    font-family: Verdana, sans-serif;
+}
+
+.tan_wrap {
+    width: 10px;
+    height: 10px;
+    margin: 1%;
+    padding: 3%;
+}
+
+.retan {
+    float: left;
+}
+
+h1 {
+    width: 280px;
+    margin: 20px auto;
+    font-size: 50px;
+    font-family: 'Black Han Sans', sans-serif;
+    float: left;
+    color: #3c6ffa;
+}
+
+.schedule_img {
+    height: auto;
+    max-width: 20%;
+}
+
+.studylog_img {
+    height: auto;
+    max-width: 20%;
+}
+
+/* todo_list CSS */

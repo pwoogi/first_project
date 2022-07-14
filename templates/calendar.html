@@ -44,6 +44,19 @@
                 window.location.href = "/login"
             }
         </script>
+        <style>
+            .calendar_img {
+                height: auto;
+                max-width: 5%;
+                margin-right: 10px
+            }
+
+            .barbell_img {
+                height: auto;
+                max-width: 5%;
+                margin-right: 10px
+            }
+        </style>
 
     </head>
     {# 배너 #}
@@ -73,11 +86,10 @@
 
     <div class="tabs is-left">
         <ul>
-            <li class="is-active" onclick="window.location.href = '/'"><a
-                    style="font-family: 'Fredoka', sans-serif;"><img
-                    src="{{ url_for('static', filename="Schedule.png") }}" class="schedule_img">Schedule</a></li>
-            <li onclick="window.location.href = '/studylog'"><a style="font-family: 'Fredoka', sans-serif;"><img
-                    src="{{ url_for('static', filename="Studylog.png") }}" class="studylog_img">Work Log</a></li>
+            <li class="is-active" onclick="window.location.href = '/'"><a style="font-family: 'Fredoka', sans-serif;"><img
+                    src="{{ url_for('static', filename="calendar.png") }}" class="calendar_img">CALENDAR</a></li>
+            <li onclick="window.location.href = '/workoutlog'"><a style="font-family: 'Fredoka', sans-serif;"><img
+                    src="{{ url_for('static', filename="barbell.png") }}" class="barbell_img">WORKOUT LOG</a></li>
         </ul>
     </div>
     <div class="tan_wrap">
