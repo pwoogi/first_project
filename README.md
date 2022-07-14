@@ -35,7 +35,7 @@ d3 첫번째 프로젝트
 <br>
 
 ## 3. 실행화면
-<image src=""
+![1](https://user-images.githubusercontent.com/107388110/178937153-00b626bf-02a6-48d6-a18a-43848402ac6e.PNG)
 
 <br>
 
