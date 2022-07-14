@@ -45,6 +45,7 @@
 
 
         // 함수 실행시 메인화면으로 넘기기{##}
+
         function to_do() {
             window.location.href = "/"
         }
@@ -72,7 +73,7 @@
 
                         if (date == decodeday) {
                             if (done == 0) {
-                            temp_html = `<li>
+                                temp_html = `<li>
                                             <h2><input onclick="done_todo(${num})" type="checkbox" class="btn-chk" > ${todo}</h2>
                                             <button onclick="delete_todo(${num})" type="button" class="btn">✖</button>
                                          </li>`
@@ -148,9 +149,9 @@
             });
         };
 
-                // 입력버튼 비활성화, 활성화 추가
-        $(function(){
-            $("#todo-input").on('input', function (){
+        // 입력버튼 비활성화, 활성화 추가
+        $(function () {
+            $("#todo-input").on('input', function () {
                 if ($("#todo-input").val() == '') {
                     $('.todo_btn').attr('disabled', true);
                 } else {
@@ -239,7 +240,8 @@
             padding: 25px;
 
         }
-          #date-input {
+
+        #date-input {
             border-radius: 10px;
             background-color: floralwhite;
             font-family: 'Nanum Gothic', sans-serif;
@@ -289,7 +291,7 @@
             /* box-shadow: 0px 0px 10px 0px lightblue;             */
         }
 
-           .todo_list > li {
+        .todo_list > li {
             display: flex;
             flex-direction: row;
 
@@ -307,17 +309,19 @@
             color: green;
             margin-left: 10px;
         }
+
         /*취소버튼*/
 
         .btn-chk {
             width: 50px;
         }
+
         /*버튼과 글자 사이*/
 
-        .selected{
-            text-decoration:line-through;
-            color:red
-        /*체크하면 빨강, 체크 생김*/
+        .selected {
+            text-decoration: line-through;
+            color: red
+            /*체크하면 빨강, 체크 생김*/
         }
 
         .schedule {
@@ -345,8 +349,9 @@
             width: 90%;
             height: 50px;
             margin: 20px auto;
-            /*    {#margin-bottom: 10px;#!*}
-                {#margin-left: 20px;#}*!*/
+            /*
+        {#margin-bottom: 10px;#!*}
+                        {#margin-left: 20px;#} *!*/
         }
 
         .schedule_footer {
@@ -370,11 +375,16 @@
             justify-content: center;
             align-items: center;
             width: 90%;
-            font-size: 30px;
+            font-size: 26px;
             padding-left: 50px;
             border-radius: 10px;
             font-family: 'Jua', sans-serif;
 
+        }
+
+        .schedule_title {
+
+            margin : 10px 0 40px 60px;
         }
 
         .Schedule:hover {
@@ -416,9 +426,8 @@
         </div>
     </div>
     <div class="schedule">
-        <div class="schedule_title">WORKOUT 일정</div>
-        <div class="schedule_body"><img src=".ᕙ(⇀‸↼‵‵)ᕗ" width="47px">&emsp;<img src="../static/graph.png"
-                                                                                           width="380px"></div>
+        <div class="schedule_title">오늘도 열심히 WORKOUT</div>
+
         <div class="msg">건강한 하루를 위해 끝까지 화이팅!<br>건강하고 행복한 그날을 위해 모두 힘내요!</div>
         <div class="schedule_footer"><a class="Schedule" href="http://www.marathon.pe.kr/schedule_index.html">❤ 마라톤 상세일정
             보러가기 ❤</a>

@@ -15,7 +15,7 @@ SECRET_KEY = 'SPARTA'
 
 ca = certifi.where()
 
-client = MongoClient('mongodb+srv://test:sparta@cluster0.hmskj9c.mongodb.net/Cluster0?retryWrites=true&w=majority')
+client = MongoClient('mongodb+srv://test:sparta@cluster0.bubyo.mongodb.net/?retryWrites=true&w=majority')
 db = client.db3team
 
 @app.route('/')
@@ -30,7 +30,7 @@ def home():
     except jwt.exceptions.DecodeError:
         return redirect(url_for("login", msg="로그인 정보가 존재하지 않습니다."))
 
-@app.route('/studylog')
+@app.route('/workoutlog')
 def list_home():
     token_receive = request.cookies.get('mytoken')
     try:
@@ -184,17 +184,17 @@ def todo_delete():
     # int()를 이용한 형변환
     return jsonify({'msg': '삭제 완료!'})
 
-# 공부기록 페이지
-@app.route('/studylog')
-def studylog():
+# 운동기록 페이지
+@app.route('/workoutlog')
+def workoutlog():
     return render_template('list.html')
 
-# DB에 공부기록 리스트 값 저장하기
+# DB에 운동기록 리스트 값 저장하기
 @app.route("/list", methods=["POST"])
 def list_post():
+    title_receive = request.form['title_give']
     name_receive = request.form['name_give']
-    blrink_receive = request.form['blrink_give']
-    chrink_receive = request.form['chrink_give']
+    hour_receive = request.form['hour_give']
     comment_receive = request.form['comment_give']
 
 
@@ -204,8 +204,8 @@ def list_post():
     doc = {
         'num': count,
         'name':name_receive,
-        'blrink':blrink_receive,
-        'chrink':chrink_receive,
+        'title':title_receive,
+        'hour':hour_receive,
         'comment':comment_receive,
         'done': 0
     }
@@ -213,7 +213,7 @@ def list_post():
 
     return jsonify({'msg': '저장 완료!!'})
 
-# 공부기록 리스트의 값 가져와서 보여주기
+# 운동기록 리스트의 값 가져와서 보여주기
 @app.route("/list", methods=["GET"])
 def list_get():
     list_list = list(db.list.find({}, {'_id': False}))
@@ -224,21 +224,21 @@ def list_get():
 def list_done():
     num_receive = request.form['num_give']
     db.list.update_one({'num': int(num_receive)}, {'$set': {'done': 1}})
-    return jsonify({'msg': '공부 목록 완료! 기억해야지!'})
+    return jsonify({'msg': '운동 기록 완료!'})
 
 # 취소함수를 실행시켰을 때 done 값을 0으로 변경하기
 @app.route("/list/undone", methods=["POST"])
 def list_undone():
     num_receive = request.form['num_give']
     db.list.update_one({'num': int(num_receive)}, {'$set': {'done': 0}})
-    return jsonify({'msg': '취소 완료~! 더해보자!'})
+    return jsonify({'msg': '취소 완료!'})
 
 # 삭제함수를 실행시켰을 때 DB삭제
 @app.route("/list/delete", methods=["POST"])
 def list_delete():
     num_receive = request.form['num_give']
     db.list.delete_one({'num': int(num_receive)})
-    return jsonify({'msg': '삭제 완료'})
+    return jsonify({'msg': '삭제 완료!'})
 
 if __name__ == '__main__':
     app.run('0.0.0.0', port=5000, debug=True)
