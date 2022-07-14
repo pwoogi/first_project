@@ -22,7 +22,7 @@ body {
 }
 
 .is-sparta {
-    color: deepskyblue !important;
+    color: #527EE6 !important;
     margin: 0 0 0 5px;
 }
 
@@ -34,8 +34,8 @@ body {
 
 .button.is-sparta.is-outlined {
     background-color: transparent;
-    border-color: deeppink;
-    color: deeppink !important;
+    border-color: #527EE6;
+    color: #527EE6 !important;
 }
 
 .modal-content {
@@ -52,6 +52,8 @@ input::-webkit-calendar-picker-indicator {
     width: 100%;
     height: 100%;
 }
+
+
 
 
 /* section calendar */
