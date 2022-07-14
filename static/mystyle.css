@@ -1,8 +1,10 @@
 /* 전체 CSS 구조 */
 body {
-    background-color: RGBA(0, 0, 0, 0);
+    background-size: cover;
+    background-position: center;
     min-height: 100vh;
     padding-top: 3.25rem;
+    font-family: 'Noto Sans KR', sans-serif;
 }
 
 .mention {
@@ -21,8 +23,9 @@ body {
     margin: auto;
 }
 
+
 .is-sparta {
-    color: #527EE6 !important;
+    color: whitesmoke!important;
     margin: 0 0 0 5px;
 }
 
@@ -52,8 +55,6 @@ input::-webkit-calendar-picker-indicator {
     width: 100%;
     height: 100%;
 }
-
-
 
 
 /* section calendar */
@@ -227,4 +228,3 @@ h1 {
     max-width: 20%;
 }
 
-/* todo_list CSS */
