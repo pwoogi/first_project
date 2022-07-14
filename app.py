@@ -15,7 +15,7 @@ SECRET_KEY = 'SPARTA'
 
 ca = certifi.where()
 
-client = MongoClient('mongodb+srv://test:sparta@cluster0.bubyo.mongodb.net/?retryWrites=true&w=majority')
+client = MongoClient('mongodb+srv://test:sparta@cluster0.hmskj9c.mongodb.net/Cluster?retryWrites=true&w=majority')
 db = client.db3team
 
 @app.route('/')
@@ -127,8 +127,8 @@ def render_calendar():
     return render_template('calendar.html')
 
 # 투두 및 일정 페이지
-@app.route('/calendar_toodo')
-def render_calender_toodo():
+@app.route('/calendar_todo')
+def render_calendar_todo():
     return render_template('todo_list.html')
 
 # todo리스트의 값 가져와서 보여주기
